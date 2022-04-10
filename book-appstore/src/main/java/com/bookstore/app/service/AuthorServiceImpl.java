@@ -1,5 +1,6 @@
 package com.bookstore.app.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,6 +59,18 @@ public class AuthorServiceImpl implements AuthorService {
 			log.info("Exception Occured while saving/updating Author Entity");
 			return false;
 		}
+	}
+
+	@Override
+	public List<AuthorDTO> getAllAuthors() {
+		ModelMapper mapper = new ModelMapper();
+		List<Author> authors = authorRepository.findAll();
+		if (authors != null && !authors.isEmpty()) {
+			List<AuthorDTO> authorDTOs = authors.stream().map(author -> mapper.map(author, AuthorDTO.class))
+					.collect(Collectors.toList());
+			return authorDTOs;
+		}
+		return Collections.emptyList();
 	}
 
 }
