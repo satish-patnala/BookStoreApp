@@ -1,8 +1,11 @@
 package com.bookstore.app.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,5 +37,15 @@ public class AuthorController {
 			return ResponseEntity.ok(response);
 		}
 		return new ResponseEntity<GenericResponse>(HttpStatus.NOT_FOUND);
+	}
+
+	@GetMapping("/getAllAuthors")
+	public ResponseEntity<List<AuthorDTO>> getAllAuthors() {
+		try {
+			List<AuthorDTO> authors = authorService.getAllAuthors();
+			return ResponseEntity.ok(authors);
+		} catch (Exception e) {
+			return new ResponseEntity<List<AuthorDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }
