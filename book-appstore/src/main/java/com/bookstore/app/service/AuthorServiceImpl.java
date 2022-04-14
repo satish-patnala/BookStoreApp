@@ -73,4 +73,28 @@ public class AuthorServiceImpl implements AuthorService {
 		return Collections.emptyList();
 	}
 
+	@Override
+	public boolean deleteAuthor(Long authorId) {
+		Author author = authorRepository.findById(authorId).orElse(null);
+		if (author != null && author.getId().equals(authorId)) {
+			authorRepository.delete(author);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public AuthorDTO getAuthorByBookName(String bookName) {
+		AuthorDTO authorDTO = null;
+		ModelMapper mapper = new ModelMapper();
+		Long authorId = (Long) authorRepository.findOneAuthorByBookName(bookName);
+		if (authorId != null && authorId.compareTo(0l) > 0) {
+			Author author = authorRepository.findById(authorId).orElse(null);
+			if (author.getId().equals(authorId) && author != null) {
+				authorDTO = mapper.map(author, AuthorDTO.class);
+			}
+		}
+		return authorDTO;
+	}
+
 }

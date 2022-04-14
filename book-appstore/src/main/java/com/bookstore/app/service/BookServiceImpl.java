@@ -80,6 +80,12 @@ public class BookServiceImpl implements BookService {
 		if (bookId != null && bookId.compareTo(0l) > 0) {
 			Book book = bookRepository.findById(bookId).orElse(null);
 			if (book != null && book.getId().equals(bookId)) {
+				Author author = authorRepository.findById(book.getAuthor().getId()).orElse(null);
+				if (author.getBookCount() > 0 && author.getId() != null && author.getId().compareTo(0l) > 0) {
+					author.setBookCount(author.getBookCount() - 1);
+					authorRepository.save(author);
+					log.info("BookCount is Updated for Author with id ::" + author.getId());
+				}
 				bookRepository.delete(book);
 				return true;
 			}

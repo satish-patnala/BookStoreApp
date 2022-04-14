@@ -18,7 +18,7 @@ import com.bookstore.app.bean.GenericResponse;
 import com.bookstore.app.service.BookService;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/v1/book")
 public class BookController {
 
 	@Autowired
@@ -75,4 +75,5 @@ public class BookController {
 		}
 		return new ResponseEntity<BookDTO>(HttpStatus.NOT_FOUND);
 	}
+
 }
