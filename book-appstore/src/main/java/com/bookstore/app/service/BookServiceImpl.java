@@ -28,6 +28,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public boolean saveBook(BookDTO bookDTO) {
+		ModelMapper mapper = new ModelMapper();
 		Book book = null;
 		try {
 			if (bookDTO.getId() != null && bookDTO.getId().compareTo(0l) > 0) {
@@ -35,30 +36,37 @@ public class BookServiceImpl implements BookService {
 				if (book != null && book.getId() != null && book.getId().compareTo(0l) > 0
 						&& bookDTO.getId().equals(book.getId())) {
 					book.setBookName(bookDTO.getBookName());
-					book.setBookAuthor(bookDTO.getAuthor());
+					book.setIsActive(bookDTO.getIsActive());
+					book.setLatestEdition(bookDTO.getLatestEdition());
 					book.setBookGenre(bookDTO.getGenre());
+					if(bookDTO.getAuthorId()!=null && bookDTO.getAuthorId().compareTo(0l)>0) {
+						Author author = authorRepository.getById(bookDTO.getAuthorId());
+						author.setBookCount(author.getBookCount()+1);
+						book.setAuthor(author);
+					}
 					book.setUpdatedDate(new Date());
 					bookRepository.save(book);
 				}
 			}
 			if (book == null) {
 				book = new Book();
+				Author author = null;
 				book.setBookName(bookDTO.getBookName());
-				book.setBookAuthor(bookDTO.getAuthor());
 				book.setBookGenre(bookDTO.getGenre());
-				if (bookDTO.getAuthorId() != null && bookDTO.getAuthorId().compareTo(0l) > 0) {
-					Author author = authorRepository.findById(bookDTO.getAuthorId()).orElse(null);
-					if (author != null && author.getId().equals(bookDTO.getAuthorId())) {
-						book.setAuthor(author);
-					}
-				}
+				book.setIsActive(bookDTO.getIsActive());
+				book.setLatestEdition(bookDTO.getLatestEdition());
 				book.setInsertedDate(new Date());
 				book.setUpdatedDate(new Date());
+				if (bookDTO.getAuthorId() != null && bookDTO.getAuthorId().compareTo(0l) > 0) {
+					author = authorRepository.findById(bookDTO.getAuthorId()).orElse(null);
+					author.setBookCount(author.getBookCount() + 1);
+				}
+				book.setAuthor(author);
 				bookRepository.save(book);
 			}
 			return true;
 		} catch (Exception e) {
-			log.info("Exception Occured while saving/updating book Entity");
+			log.info("Exception Occured while saving/updating book Entity ::" + e.getMessage());
 			return false;
 		}
 	}
@@ -80,11 +88,13 @@ public class BookServiceImpl implements BookService {
 		if (bookId != null && bookId.compareTo(0l) > 0) {
 			Book book = bookRepository.findById(bookId).orElse(null);
 			if (book != null && book.getId().equals(bookId)) {
-				Author author = authorRepository.findById(book.getAuthor().getId()).orElse(null);
-				if (author.getBookCount() > 0 && author.getId() != null && author.getId().compareTo(0l) > 0) {
-					author.setBookCount(author.getBookCount() - 1);
-					authorRepository.save(author);
-					log.info("BookCount is Updated for Author with id ::" + author.getId());
+				if (book.getAuthor()!=null) {
+					Author author = authorRepository.findById(book.getAuthor().getId()).orElse(null);
+					if (author.getBookCount() > 0 && author.getId() != null && author.getId().compareTo(0l) > 0) {
+						author.setBookCount(author.getBookCount() - 1);
+						authorRepository.save(author);
+						log.info("BookCount is Updated for Author with id ::" + author.getId());
+					}
 				}
 				bookRepository.delete(book);
 				return true;
