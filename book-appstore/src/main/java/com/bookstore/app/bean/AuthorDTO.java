@@ -10,6 +10,7 @@ import lombok.Setter;
 public class AuthorDTO {
 	
 	private Long id;
+	private String name;
 	private Long bookCount;
 	private String gender;
 	private Integer age;

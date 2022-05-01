@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.DynamicUpdate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "books_info")
+@DynamicUpdate
 public class Book {
 
 	@Id
@@ -27,17 +29,19 @@ public class Book {
 	private Long id;
 	@Column(name = "book_name")
 	private String bookName;
-	@Column(name = "author_name")
-	private String bookAuthor;
+	@Column(name = "book_genre")
+	private String bookGenre;
+	@Column(name = "latest_edition")
+	private String latestEdition;
+	@Column(name = "active")
+	private String isActive;
 	@Column(name = "inserted_date")
 	private Date insertedDate;
 	@Column(name = "updated_date")
 	private Date updatedDate;
-	@Column(name = "book_genre")
-	private String bookGenre;
 	@ManyToOne
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@JoinColumn(name = "author_id")
-	private Author author ;
+	private Author author;
 
 }

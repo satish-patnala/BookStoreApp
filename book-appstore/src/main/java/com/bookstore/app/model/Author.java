@@ -16,12 +16,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "author_info")
 public class Author {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "author_id")
 	private Long id;
+	@Column(name = "author_name")
+	private String name;
 	@Column(name = "books_count")
 	private Long bookCount;
 	@Column(name = "sex")
@@ -30,7 +32,7 @@ public class Author {
 	private String nationality;
 	@Column(name = "author_age")
 	private Integer age;
-	@OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "author_id")
 	private List<Book> books;
 
